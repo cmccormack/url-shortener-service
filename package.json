@@ -1,0 +1,32 @@
+{
+  "name": "url-shortener",
+  "version": "1.0.0",
+  "description": "Service that returns a shortened URL for a given URL",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmccormack/url-shortener-service.git"
+  },
+  "keywords": [
+    "URL-Shortener",
+    "API",
+    "Node"
+  ],
+  "author": "Chris McCormack https://mackville.net",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cmccormack/url-shortener-service/issues"
+  },
+  "homepage": "https://github.com/cmccormack/url-shortener-service#readme",
+  "dependencies": {
+    "consolidate": "^0.14.5",
+    "express": "^4.16.2",
+    "mongodb": "^2.2.33"
+  },
+  "devDependencies": {
+    "nunjucks": "^3.0.1"
+  }
+}
