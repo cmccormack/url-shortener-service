@@ -2,9 +2,10 @@
   "name": "url-shortener",
   "version": "1.0.0",
   "description": "Service that returns a shortened URL for a given URL",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +26,8 @@
     "consolidate": "^0.14.5",
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
-    "mongodb": "^2.2.33"
+    "mongodb": "^2.2.33",
+    "validator": "^9.1.1"
   },
   "devDependencies": {
     "nunjucks": "^3.0.1"
