@@ -1,7 +1,7 @@
 
 module.exports = (app, db) => {
 
-  const renderSuccess = (req, res, next) => {
+  const renderExample = (req, res, next) => {
     res.status(200).render('examples', {
       title: 'URL Shortener',
       url: 'https://shortyurl.glitch.me/new/',
@@ -17,6 +17,6 @@ module.exports = (app, db) => {
     })
   }
   
-  app.get(['/', '/new'], renderSuccess)
+  app.get(['/', '/new'], renderExample)
   
 }
