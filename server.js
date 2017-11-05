@@ -20,10 +20,16 @@ app.set('views', __dirname + '/views')
 // Connect to MongoDB database
 mongo.connect(process.env.MONGO_URI, (err, db) => {
 
-  // If error, call error handler middlware 
   assert.equal(null, err)
 
-  console.log("Successfully connected to MongoDB.");
+  console.log("Successfully connected to MongoDB.")
+
+  // Unlock counter in the event of a crash
+  db.collection('urlshortener').update({ '_id': 'counter' }, { $set: { 'locked': false } })
+
+  // DEBUG reset counter while testin
+  db.collection('urlshortener').update({ '_id': 'counter' }, { $set: { 'value': 1000000 } })
+
 
   // Cross-Origin Header Middleware
   app.use((req, res, next) => {
