@@ -6,7 +6,14 @@ module.exports = (app, db, example, hostname) => {
 
   const urldb = db.collection('urlshortener')
 
-  const createNewURL = (urldb, response, res) => {
+  const sendJSONResponse = (req, res, response) => {
+    res.type('json').send(JSON.stringify({
+      original_url: response.original_url,
+      short_url: `${req.headers.host}/${response.short_url}`
+    }))
+  }
+
+  const createNewURL = (urldb, response, req, res, next) => {
     // Read current counter from db if counter not locked
     urldb.find({ '_id': 'counter' }).toArray((err, docs) => {
 
@@ -31,10 +38,7 @@ module.exports = (app, db, example, hostname) => {
           urldb.insertOne(response)
 
           // Respond with shortened URL
-          res.type('json').send(JSON.stringify({
-            original_url: response.original_url,
-            short_url: `${hostname}/${response.short_url}`
-          }))
+          sendJSONResponse(req, res, response)
         })
 
       } else {
@@ -60,20 +64,20 @@ module.exports = (app, db, example, hostname) => {
 
     // Exit early if URL is invalid
     if (!validator.isURL(url)){
-      res.type('json').send(JSON.stringify({
+      return res.type('json').send(JSON.stringify({
         original_url: response.original_url,
+        short_url: null,
         error: 'Invalid URL format.  Use format similar to http://www.example.com'
       }))
-      return next(Error('Invalid URL Provided.'))
     } 
 
     // Check if entry is already in database
     urldb.find({_id: hash}, {_id: 0}).toArray((err, docs) => {
       if(docs.length !== 0) {
         console.log('URL already in database.')
-        return res.send(docs[0])
+        return sendJSONResponse(req, res, docs[0])
       } else {
-        createNewURL(urldb, response, res)
+        createNewURL(urldb, response, req, res, next)
       }
     })
   })
