@@ -2,7 +2,9 @@ const crypto = require('crypto')
 const validator = require('validator')
 const base54 = require('./base54')
 
-module.exports = (app, db) => {
+module.exports = (app, db, example) => {
+
+  const urldb = db.collection('urlshortener')
 
   const createNewURL = (urldb, response, res) => {
     // Read current counter from db if counter not locked
@@ -25,8 +27,7 @@ module.exports = (app, db) => {
           // Update counter value for next request
           urldb.update({ '_id': 'counter' }, { 'locked': false, 'value': counter.value + 1000 })
 
-          // Push hash + shortened string + original url to DB
-
+          // Push response to DB
           urldb.insertOne(response)
 
           // Respond with shortened URL
@@ -41,11 +42,15 @@ module.exports = (app, db) => {
     })
   }
 
+  app.get(['/', '/new'], (req, res, next) => {
+    res.status(200).render('examples', example)
+  })
+
   app.get('/new/:href(*)', (req, res, next) => {
 
     const url = req.params.href
     const hash = crypto.createHash('sha256').update(url).digest('hex')
-    const urldb = db.collection('urlshortener')
+    
 
     const response = {
       _id: hash,
@@ -67,4 +72,24 @@ module.exports = (app, db) => {
       }
     })
   })
+
+  app.get('/:shorturl', (req, res, next) => {
+    console.log('in /:shorturl route')
+    urldb.find({'short_url': req.params.shorturl}).toArray((err, docs) =>{
+      if (docs.length === 0){
+        res.render('examples', 
+          {
+            title: example.title,
+            url: example.url,
+            exampleinput: example.exampleinput,
+            exampleoutput: example.exampleoutput,
+            error: 'Invalid Short URL'}
+        )
+      } else {
+        res.redirect(docs[0].original_url)
+      }
+    })
+  })
+
+
 }
