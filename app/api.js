@@ -2,7 +2,7 @@ const crypto = require('crypto')
 const validator = require('validator')
 const base54 = require('./base54')
 
-module.exports = (app, db, example) => {
+module.exports = (app, db, example, hostname) => {
 
   const urldb = db.collection('urlshortener')
 
@@ -33,9 +33,10 @@ module.exports = (app, db, example) => {
           // Respond with shortened URL
           res.type('json').send(JSON.stringify({
             original_url: response.original_url,
-            short_url: response.short_url
+            short_url: `${hostname}/${response.short_url}`
           }))
         })
+
       } else {
         return next(Error('Database currently locked.  Please try again shortly.'))
       }
@@ -59,6 +60,10 @@ module.exports = (app, db, example) => {
 
     // Exit early if URL is invalid
     if (!validator.isURL(url)){
+      res.type('json').send(JSON.stringify({
+        original_url: response.original_url,
+        error: 'Invalid URL format.  Use format similar to http://www.example.com'
+      }))
       return next(Error('Invalid URL Provided.'))
     } 
 
@@ -74,7 +79,6 @@ module.exports = (app, db, example) => {
   })
 
   app.get('/:shorturl', (req, res, next) => {
-    console.log('in /:shorturl route')
     urldb.find({'short_url': req.params.shorturl}).toArray((err, docs) =>{
       if (docs.length === 0){
         res.render('examples', 
