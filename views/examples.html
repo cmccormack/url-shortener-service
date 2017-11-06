@@ -47,7 +47,11 @@
         </ul>
         <span class='lead'>Example Output:</span>
         <ul>
-          <li><code>{ "unix": 416102400, "natural": "March 10, 1983" }</code></li>
+          {% for example in exampleoutput %}
+          <li>
+            <code>{{ example }}</code>
+          </li>
+          {% endfor %}
         </ul>
       </div>
     </div>
