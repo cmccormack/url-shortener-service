@@ -14,7 +14,20 @@ app.engine('html', cons.nunjucks)
 app.set('view engine', 'html')
 app.set('views', __dirname + '/views')
 
-
+const example = {
+  title: 'URL Shortener',
+  url: 'https://shortyurl.glitch.me/new/',
+  exampleinput: [
+    'https://shortyurl.glitch.me/new/https://www.google.com',
+  ],
+  exampleoutput: [
+    JSON.stringify({
+      original_url: "https://www.google.com",
+      short_url: "https://shortyurl.herokuapp.com/8170"
+    })
+  ],
+  error: null
+}
 
 
 // Connect to MongoDB database
@@ -27,8 +40,11 @@ mongo.connect(process.env.MONGO_URI, (err, db) => {
   // Unlock counter in the event of a crash
   db.collection('urlshortener').update({ '_id': 'counter' }, { $set: { 'locked': false } })
 
-  // DEBUG reset counter while testin
+  // DEBUG reset counter while testing
   db.collection('urlshortener').update({ '_id': 'counter' }, { $set: { 'value': 1000000 } })
+
+  // DEBUG delete all url entries from db
+  // db.collection('urlshortener').deleteMany({ 'short_url': {$exists: true}})
 
 
   // Cross-Origin Header Middleware
@@ -38,8 +54,7 @@ mongo.connect(process.env.MONGO_URI, (err, db) => {
     next();
   })
 
-  routes(app, db)
-  api(app, db)
+  api(app, db, example)
 
   // Error Handler Middleware
   app.use((err, req, res, next) => {
