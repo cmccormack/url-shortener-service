@@ -4,7 +4,6 @@ const mongo = require('mongodb').MongoClient
 const cons = require('consolidate')
 const assert = require('assert')
 
-const routes = require('./app/routes')
 const api = require('./app/api')
 
 const app = express()
