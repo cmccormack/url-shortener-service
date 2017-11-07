@@ -1,6 +1,6 @@
 
 # URL Shortener Service
-Service that returns a shortened URL for a given URL
+Service that returns a shortened URL for a given URL.  [Try it out](https://shortyurl.glitch.me/)
 
 **Objective:** Build a full stack JavaScript app that is functionally similar to [this](https://little-url.herokuapp.com/).
 
